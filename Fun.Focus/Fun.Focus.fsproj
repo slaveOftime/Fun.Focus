@@ -21,7 +21,7 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1" />
-		<PackageReference Include="Fun.SunUI.WPF" Version="0.0.3" />
+		<PackageReference Include="Fun.SunUI.WPF" Version="0.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
