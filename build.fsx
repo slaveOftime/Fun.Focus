@@ -1,31 +1,27 @@
 #r "nuget: Fake.DotNet.Cli,5.23.0"
 #r "nuget: Fake.IO.FileSystem,5.23.0"
 #r "nuget: Fake.IO.Zip,5.23.0"
-#r "nuget: BlackFox.Fake.BuildTask,0.1.3"
+#r "nuget: Fun.Build,0.1.8"
 
-open BlackFox.Fake
+open Fun.Build
 open Fake.DotNet
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 
 
-fsi.CommandLineArgs |> Array.skip 1 |> BuildTask.setupContextFromArgv
+let version = "0.0.3"
 
-
-let version = "0.0.2"
-
-let projFile = __SOURCE_DIRECTORY__ </> "Fun.Focus" </> "Fun.Focus.csproj"
+let projFile = __SOURCE_DIRECTORY__ </> "Fun.Focus" </> "Fun.Focus.fsproj"
 let outputDir = __SOURCE_DIRECTORY__ </> "Publish"
 let supportedRuntimes = [ "win-x86"; "win-x64"; "win-arm64" ]
 
 
-let setVersionTask =
-    BuildTask.create "SetVersion" [] {
-        File.writeString
-            false
-            "Directory.Build.props"
-            $"""
+let setVersion () =
+    File.writeString
+        false
+        "Directory.Build.props"
+        $"""
 <Project>
     <PropertyGroup>
         <AssemblyVersion>{version}</AssemblyVersion>
@@ -39,30 +35,31 @@ let setVersionTask =
     </PropertyGroup>
 </Project>
         """
+
+
+pipeline "Publish" {
+    stage "Clean" {
+        run (fun _ -> supportedRuntimes |> List.iter (fun x -> Directory.delete (outputDir </> x)))
+        run (fun _ -> setVersion ())
     }
+    stage "Bundle" {
+        run (fun _ ->
+            let publishAndZipFor runtime =
+                let targetDir = outputDir </> runtime
+                DotNet.publish
+                    (fun options ->
+                        { options with
+                            Runtime = Some runtime
+                            OutputPath = Some targetDir
+                            SelfContained = Some false
+                        }
+                    )
+                    projFile
 
+                !!(targetDir </> "**/*.*") |> Zip.zip targetDir (outputDir </> $"Fun.Focus-{version}-{runtime}.zip")
 
-let cleanTask =
-    BuildTask.create "Clean" [] { supportedRuntimes |> List.iter (fun x -> Directory.delete (outputDir </> x)) }
-
-
-let publishTask =
-    BuildTask.create "Publish" [ cleanTask; setVersionTask ] {
-        let publishAndZipFor runtime =
-            let targetDir = outputDir </> runtime
-            DotNet.publish
-                (fun options ->
-                    { options with
-                        Runtime = Some runtime
-                        OutputPath = Some targetDir
-                        SelfContained = Some false
-                    }
-                )
-                projFile
-
-            !!(targetDir </> "**/*.*") |> Zip.zip targetDir (outputDir </> $"Fun.Focus-{version}-{runtime}.zip")
-
-        supportedRuntimes |> List.iter publishAndZipFor
+            supportedRuntimes |> List.iter publishAndZipFor
+        )
     }
-
-BuildTask.runOrDefault publishTask
+    runIfOnlySpecified
+}
