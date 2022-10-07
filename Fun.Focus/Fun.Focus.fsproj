@@ -12,6 +12,9 @@
 	<ItemGroup>
 	  <Content Include="logo.ico" />
 	  <Compile Include="Settings.fs" />
+	  <Compile Include="FocusService.fs" />
+	  <Compile Include="Toolbar.fs" />
+	  <Compile Include="ScreenView.fs" />
 	  <Compile Include="Program.fs" />
 	</ItemGroup>
 
