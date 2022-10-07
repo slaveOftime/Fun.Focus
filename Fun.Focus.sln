@@ -1,22 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fun.Focus", "Fun.Focus\Fun.Focus.csproj", "{F05A241B-68D5-468E-AC7C-005C10A71FF6}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Fun.Focus", "Fun.Focus\Fun.Focus.fsproj", "{995CB4FE-5A55-40C8-8F83-9B8EF0922DB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{995CB4FE-5A55-40C8-8F83-9B8EF0922DB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{995CB4FE-5A55-40C8-8F83-9B8EF0922DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{995CB4FE-5A55-40C8-8F83-9B8EF0922DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{995CB4FE-5A55-40C8-8F83-9B8EF0922DB5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F05A241B-68D5-468E-AC7C-005C10A71FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F05A241B-68D5-468E-AC7C-005C10A71FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F05A241B-68D5-468E-AC7C-005C10A71FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F05A241B-68D5-468E-AC7C-005C10A71FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B58F588C-B301-4979-9FD2-794EF81E177D}
 	EndGlobalSection
 EndGlobal

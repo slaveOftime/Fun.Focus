@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net471</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -11,11 +11,14 @@
 
 	<ItemGroup>
 	  <Content Include="logo.ico" />
+	  <Compile Include="Settings.fs" />
+	  <Compile Include="Program.fs" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="Fun.SunUI.WPF" Version="0.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
