@@ -1,38 +1,38 @@
 ﻿[<AutoOpen>]
 module Fun.Focus.ScreenView
 
-open System.Threading
-open System.Windows.Controls
+open System.IO
 open System.Drawing
 open System.Drawing.Imaging
-open SkiaSharp
-open SkiaSharp.Views.WPF
-open SkiaSharp.Views.Desktop
+open System.Threading
+open System.Windows.Media
+open System.Windows.Media.Imaging
+open System.Windows.Controls
+open FSharp.Data.Adaptive
 open Microsoft.Extensions.DependencyInjection
 open Fun.SunUI
-open Fun.SunUI.WPF
+open Fun.SunUI.WPF.Controls
 open Fun.Focus
 
 
 let screenView =
-    UI.native<SKElement, WPF> (fun ctx ->
+    UI.inject (fun ctx ->
         let cts = new CancellationTokenSource()
         let focusService = ctx.ServiceProvider.GetService<FocusService>()
-        let canvas = SKElement()
+        let imageStore: ImageSource cval = cval null
 
         ctx.AddDispose cts
 
-        Grid.SetRowSpan(canvas, 2)
 
-        canvas.PaintSurface.Add(fun e ->
-            let canvas = e.Surface.Canvas
+        let refreshImage () =
             let settings = focusService.Settings.GetValue()
 
             if focusService.IsActive.Value then
-                canvas.Clear SKColors.Transparent
+                imageStore.Publish null
             else
                 use bitmap =
                     new Bitmap((int) (settings.Width * focusService.DpiX), (int) (settings.Height * focusService.DpiY), PixelFormat.Format32bppArgb)
+
                 use graphics = Graphics.FromImage(bitmap)
 
                 graphics.CopyFromScreen(
@@ -44,22 +44,33 @@ let screenView =
                     CopyPixelOperation.SourceCopy
                 )
 
-                let skBitmap = bitmap.ToSKBitmap()
+                let stream = new MemoryStream()
+                let image = new BitmapImage()
 
-                canvas.Clear SKColors.Transparent
-                canvas.DrawBitmap(skBitmap, SKPoint(float32 0, float32 0))
-        )
+                bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp)
+
+                image.BeginInit()
+                stream.Seek(0, SeekOrigin.Begin) |> ignore
+                image.StreamSource <- stream
+                image.EndInit()
+
+                imageStore.Publish image
+
 
         async {
             while not cts.IsCancellationRequested do
-                let mutable delay = focusService.Settings.GetFieldValue(fun x -> x.FrameDelay)
-                if delay < 10 || delay > 1_000 then delay <- 100
+                let delay =
+                    let delay = focusService.Settings.GetFieldValue(fun x -> x.FrameDelay)
+                    if delay < 10 || delay > 1_000 then 100 else delay
 
                 do! Async.Sleep delay
-
-                focusService.Dispatcher canvas.InvalidateVisual
+                focusService.Dispatcher refreshImage
         }
         |> Async.Start
 
-        canvas
+
+        Image'() {
+            With(fun this -> Grid.SetRowSpan(this, 2))
+            Source imageStore
+        }
     )

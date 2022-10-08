@@ -1,42 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<UseWPF>true</UseWPF>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net471</TargetFramework>
-		<Nullable>enable</Nullable>
-		<UseWPF>true</UseWPF>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="logo.ico" />
-	  <Compile Include="Settings.fs" />
-	  <Compile Include="FocusService.fs" />
-	  <Compile Include="Toolbar.fs" />
-	  <Compile Include="ScreenView.fs" />
-	  <Compile Include="Program.fs" />
+		<Content Include="logo.ico" />
+		<Compile Include="Settings.fs" />
+		<Compile Include="FocusService.fs" />
+		<Compile Include="Toolbar.fs" />
+		<Compile Include="ScreenView.fs" />
+		<Compile Include="Program.fs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1" />
 		<PackageReference Include="Fun.SunUI.WPF" Version="0.0.4" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Properties\Settings.Designer.cs">
-			<DesignTimeSharedInput>True</DesignTimeSharedInput>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Settings.settings</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Properties\Settings.settings">
-	    <Generator>SettingsSingleFileGenerator</Generator>
-	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-	  </None>
 	</ItemGroup>
 
 </Project>
