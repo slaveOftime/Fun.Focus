@@ -10,10 +10,10 @@ open Fun.Focus
 
 
 let normalizeWindow (settings: AdaptiveForm<SettingsData, _>) (windowRef: Window) dpiX dpiY =
-    windowRef.Left <- windowRef.Left * dpiX / dpiX
-    windowRef.Top <- windowRef.Top * dpiY / dpiY
-    windowRef.Width <- windowRef.Width * dpiX / dpiX
-    windowRef.Height <- windowRef.Height * dpiY / dpiY
+    windowRef.Left <- float (int (windowRef.Left * dpiX)) / dpiX
+    windowRef.Top <- float (int (windowRef.Top * dpiY)) / dpiY
+    windowRef.Width <- float (int (windowRef.Width * dpiX)) / dpiX
+    windowRef.Height <- float (int (windowRef.Height * dpiY)) / dpiY
 
     settings.UseFieldSetter (fun x -> x.Width) windowRef.Width
     settings.UseFieldSetter (fun x -> x.Height) windowRef.Height
