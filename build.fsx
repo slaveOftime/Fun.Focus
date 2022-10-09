@@ -44,21 +44,17 @@ pipeline "Publish" {
     }
     stage "Bundle" {
         run (fun _ ->
-            let publishAndZipFor runtime =
-                let targetDir = outputDir </> runtime
-                DotNet.publish
-                    (fun options ->
-                        { options with
-                            Runtime = Some runtime
-                            OutputPath = Some targetDir
-                            SelfContained = Some false
-                        }
-                    )
-                    projFile
+            let targetDir = outputDir </> "dist"
+            DotNet.publish
+                (fun options ->
+                    { options with
+                        OutputPath = Some targetDir
+                        SelfContained = Some false
+                    }
+                )
+                projFile
 
-                !!(targetDir </> "**/*.*") |> Zip.zip targetDir (outputDir </> $"Fun.Focus-{version}-{runtime}.zip")
-
-            supportedRuntimes |> List.iter publishAndZipFor
+            !!(targetDir </> "**/*.*") |> Zip.zip targetDir (outputDir </> $"Fun.Focus-{version}.zip")
         )
     }
     runIfOnlySpecified
