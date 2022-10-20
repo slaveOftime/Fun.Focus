@@ -1,5 +1,6 @@
 ﻿namespace Fun.Focus
 
+open System
 open System.Configuration
 open Newtonsoft.Json
 
@@ -26,7 +27,7 @@ type SettingsData =
         Height = 720
         FocusColor = "#abff26"
         FrameDelay = 100
-        TransparentMode = false
+        TransparentMode = Environment.OSVersion.Version.Build >= 9200
     }
 
 

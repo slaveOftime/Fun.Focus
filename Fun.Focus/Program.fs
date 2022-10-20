@@ -86,7 +86,6 @@ let window =
 
 [<EntryPoint; STAThread>]
 let main (_: string[]) =
-
     let services = ServiceCollection()
     services.AddSingleton<FocusService>() |> ignore
 
