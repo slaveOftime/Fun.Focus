@@ -14,17 +14,19 @@ type SettingsData =
         Height: float
         FocusColor: string
         FrameDelay: int
+        /// In lastest Windows11, when share a window which is not active or visible, it will become blank.
+        TransparentMode: bool
     }
 
-    static member DefaultValue = {
-        Title = "Fun.Focus"
-        Top = 100
-        Left = 100
-        Width = 1260
-        Height = 720
-        FocusColor = "#abff26"
-        FrameDelay = 100
-    }
+    static member DefaultValue =
+        { Title = "Fun.Focus"
+          Top = 100
+          Left = 100
+          Width = 1260
+          Height = 720
+          FocusColor = "#abff26"
+          FrameDelay = 100
+          TransparentMode = false }
 
 
 type Settings() as this =

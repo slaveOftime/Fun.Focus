@@ -21,6 +21,7 @@ type FocusService() =
 
     member val StartDrag = fun () -> () with get, set
     member val CloseWindow = fun () -> () with get, set
+    member val SetAsTopMost = fun (_: bool) -> () with get, set
     member val Dispatcher = fun (fn: unit -> unit) -> fn () with get, set
 
     member _.DpiX = dpiX
@@ -29,8 +30,14 @@ type FocusService() =
     member _.Settings = settings
     member _.IsActive = isActive
 
-    member _.FocusBrush = adaptive {
-        match! isActive with
-        | true -> return Media.SolidColorBrush Media.Colors.White :> Media.Brush
-        | false -> return Media.BrushConverter().ConvertFrom(settings.GetFieldValue(fun x -> x.FocusColor)) :?> Media.Brush
-    }
+    member _.FocusBrush =
+        adaptive {
+            match! isActive with
+            | true -> return Media.SolidColorBrush Media.Colors.White :> Media.Brush
+            | false ->
+                return
+                    Media
+                        .BrushConverter()
+                        .ConvertFrom(settings.GetFieldValue(fun x -> x.FocusColor))
+                    :?> Media.Brush
+        }
