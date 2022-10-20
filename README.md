@@ -19,10 +19,10 @@ Currently, those software (like Teams) does not support to share a specific area
 ## Tips
 
 - You can use this application with Windows PowerToy fancy zone together, so you can easily drag any window to a specific size.
-- You may need to download related dotnet core desktop runtime for the first time.
+- .NET Framework 4.7.1 or above is required.
 
 
 ## Development
 
-- Make sure you have dotnet sdk 6 is installed.
+- Make sure you have dotnet sdk 6 and .NET Framework 4.7.1 SDK or above is installed.
 - In the root folder, run `dotnet fsi ./build.fsx` for publish applications for different runtime.
