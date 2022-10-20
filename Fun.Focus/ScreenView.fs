@@ -1,10 +1,10 @@
 ﻿[<AutoOpen>]
 module Fun.Focus.ScreenView
 
+open System
 open System.IO
 open System.Drawing
 open System.Drawing.Imaging
-open System.Threading
 open System.Windows.Media
 open System.Windows.Media.Imaging
 open System.Windows.Controls
@@ -17,12 +17,8 @@ open Fun.Focus
 
 let screenView =
     UI.inject (fun ctx ->
-        let cts = new CancellationTokenSource()
         let focusService = ctx.ServiceProvider.GetService<FocusService>()
         let imageStore: ImageSource cval = cval null
-
-        ctx.AddDispose cts
-
 
         let refreshImage () =
             let settings = focusService.Settings.GetValue()
@@ -31,7 +27,11 @@ let screenView =
                 imageStore.Publish null
             else
                 use bitmap =
-                    new Bitmap((int) (settings.Width * focusService.DpiX), (int) (settings.Height * focusService.DpiY), PixelFormat.Format32bppArgb)
+                    new Bitmap(
+                        (int) (settings.Width * focusService.DpiX),
+                        (int) (settings.Height * focusService.DpiY),
+                        PixelFormat.Format32bppArgb
+                    )
 
                 use graphics = Graphics.FromImage(bitmap)
 
@@ -57,20 +57,40 @@ let screenView =
                 imageStore.Publish image
 
 
-        async {
-            while not cts.IsCancellationRequested do
-                let delay =
-                    let delay = focusService.Settings.GetFieldValue(fun x -> x.FrameDelay)
-                    if delay < 10 || delay > 1_000 then 100 else delay
+        let mutable useImageFreshLoop = false
 
-                do! Async.Sleep delay
-                focusService.Dispatcher refreshImage
-        }
-        |> Async.Start
+        ctx.AddDispose
+            { new IDisposable with
+                member _.Dispose() = useImageFreshLoop <- false }
+
+        focusService
+            .Settings
+            .UseFieldValue(fun x -> x.TransparentMode)
+            .AddInstantCallback(
+                function
+                | true ->
+                    useImageFreshLoop <- false
+                    focusService.SetAsTopMost true
+                    imageStore.Publish null
+                | false ->
+                    async {
+                        useImageFreshLoop <- true
+                        focusService.SetAsTopMost false
+
+                        while useImageFreshLoop do
+                            let delay =
+                                let delay = focusService.Settings.GetFieldValue(fun x -> x.FrameDelay)
+                                if delay < 10 || delay > 1_000 then 100 else delay
+
+                            do! Async.Sleep delay
+                            focusService.Dispatcher refreshImage
+                    }
+                    |> Async.Start
+            )
+        |> ignore
 
 
         Image'() {
             With(fun this -> Grid.SetRowSpan(this, 2))
             Source imageStore
-        }
-    )
+        })
