@@ -56,7 +56,7 @@ let toolbar =
                                     Click(fun _ -> setIsTransparentMode (not isTransparentMode))
                                     Content' "Use Transparent Mode"
                                     Margin(Thickness(0, 2, 15, 0))
-                                    ToolTip "You can try to toggle this if it is blank when sharing."
+                                    ToolTip "You can try to toggle this if it is blank when sharing. This is because different version of Widows has different bahavior."
                                 }
                                 if not isTransparentMode then
                                     TextBlock'() {
