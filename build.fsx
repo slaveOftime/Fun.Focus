@@ -14,7 +14,7 @@ let version = "0.0.3"
 
 let projFile = __SOURCE_DIRECTORY__ </> "Fun.Focus" </> "Fun.Focus.fsproj"
 let outputDir = __SOURCE_DIRECTORY__ </> "Publish"
-let supportedRuntimes = [ "win-x86"; "win-x64"; "win-arm64" ]
+let distDir = outputDir </> "dist"
 
 
 let setVersion () =
@@ -39,23 +39,22 @@ let setVersion () =
 
 pipeline "Publish" {
     stage "Clean" {
-        run (fun _ -> supportedRuntimes |> List.iter (fun x -> Directory.delete (outputDir </> x)))
+        run (fun _ -> Directory.delete distDir)
         run (fun _ -> setVersion ())
     }
     stage "Bundle" {
         run (fun _ ->
-            let targetDir = outputDir </> "dist"
             DotNet.publish
                 (fun options ->
                     { options with
-                        OutputPath = Some targetDir
+                        OutputPath = Some distDir
                         SelfContained = Some false
                     }
                 )
                 projFile
 
-            !!(targetDir </> "**/*.*") |> Zip.zip targetDir (outputDir </> $"Fun.Focus-{version}.zip")
+            !!(distDir </> "**/*.*") |> Zip.zip distDir (outputDir </> $"Fun.Focus-{version}.zip")
         )
     }
-    runIfOnlySpecified
+    runIfOnlySpecified false
 }
