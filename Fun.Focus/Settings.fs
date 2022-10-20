@@ -18,15 +18,16 @@ type SettingsData =
         TransparentMode: bool
     }
 
-    static member DefaultValue =
-        { Title = "Fun.Focus"
-          Top = 100
-          Left = 100
-          Width = 1260
-          Height = 720
-          FocusColor = "#abff26"
-          FrameDelay = 100
-          TransparentMode = false }
+    static member DefaultValue = {
+        Title = "Fun.Focus"
+        Top = 100
+        Left = 100
+        Width = 1260
+        Height = 720
+        FocusColor = "#abff26"
+        FrameDelay = 100
+        TransparentMode = false
+    }
 
 
 type Settings() as this =

@@ -27,11 +27,7 @@ let screenView =
                 imageStore.Publish null
             else
                 use bitmap =
-                    new Bitmap(
-                        (int) (settings.Width * focusService.DpiX),
-                        (int) (settings.Height * focusService.DpiY),
-                        PixelFormat.Format32bppArgb
-                    )
+                    new Bitmap((int) (settings.Width * focusService.DpiX), (int) (settings.Height * focusService.DpiY), PixelFormat.Format32bppArgb)
 
                 use graphics = Graphics.FromImage(bitmap)
 
@@ -61,7 +57,8 @@ let screenView =
 
         ctx.AddDispose
             { new IDisposable with
-                member _.Dispose() = useImageFreshLoop <- false }
+                member _.Dispose() = useImageFreshLoop <- false
+            }
 
         focusService
             .Settings
@@ -87,10 +84,11 @@ let screenView =
                     }
                     |> Async.Start
             )
-        |> ignore
+        |> ctx.AddDispose
 
 
         Image'() {
             With(fun this -> Grid.SetRowSpan(this, 2))
             Source imageStore
-        })
+        }
+    )
